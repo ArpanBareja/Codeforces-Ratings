@@ -5,10 +5,13 @@
     "version": "0.0.1",
     "action": {
         "default_title": "Codeforces-Ratings",
-        "default_icon": "CFRatings.png",
+        "default_icon": "CFR.png",
         "default_popup": "index.html"
     },
     "permissions": ["activeTab"],
+    "icons": {
+        "128": "CFR.png"
+    },
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
