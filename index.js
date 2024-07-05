@@ -7,18 +7,19 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch(`https://codeforces.com/api/user.rating?handle=${user}`);
             const data = await response.json();
 
-            if (data.status === "FAILED") {
-                console.error('Failed to fetch user rating.');
-                return;
+            if (data.status === "OK") {
+                const users = localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : [];
+                users.push(user);
+                localStorage.setItem(key, JSON.stringify(users));
+
+                returnUsers();
             }
-
-            const users = localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : [];
-            users.push(user);
-            localStorage.setItem(key, JSON.stringify(users));
-
-            returnUsers();
+            else {
+                alert("Invalid Username") ;
+            }
         } catch (error) {
             console.error('Error adding user:', error);
+            alert('An error occurred while adding the user. Please try again.');
         }
     }
 
@@ -26,7 +27,10 @@ document.addEventListener('DOMContentLoaded', function() {
     async function returnUsers() {
         const users = localStorage.getItem(key);
         if (!users) {
-            document.getElementById('cards-div').innerHTML = '';
+            const cardsDiv = document.getElementById('cards-div');
+            if (cardsDiv) {
+                cardsDiv.innerHTML = '';
+            }
             return;
         }
 
@@ -38,57 +42,55 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch(`https://codeforces.com/api/user.info?handles=${handlesString}`);
             const data = await response.json();
 
-            if (!data.result) {
-                console.error('Failed to fetch user info.');
-                return;
-            }
+            if (data.status === "OK") {
+                const cardsDiv = document.getElementById('cards-div');
+                if (!cardsDiv) {
+                    console.error('Element with id "cards-div" not found.');
+                    return;
+                }
 
-            const cardsDiv = document.getElementById('cards-div');
-            if (!cardsDiv) {
-                console.error('Element with id "cards-div" not found.');
-                return;
-            }
+                cardsDiv.innerHTML = '';
 
-            cardsDiv.innerHTML = '';
+                data.result.forEach(user => {
+                    const fullName = `${user.firstName} ${user.lastName}`;
 
-            data.result.forEach(user => {
-                const fullName = `${user.firstName} ${user.lastName}`;
-
-                cardsDiv.innerHTML += `
-                    <div class="card" id="${user.handle}">
-                        <div class="title-section">
-                            <div class="user-info-section">
-                                <div class="user-img-div">
-                                    <img src="${user.titlePhoto}" alt="" class="user-img">
-                                </div>
-                                <div class="name-section">
-                                    <div class="name-div">
-                                        <h3 class="name">${fullName}</h3>
+                    cardsDiv.innerHTML += `
+                        <div class="card" id="${user.handle}">
+                            <div class="title-section">
+                                <div class="user-info-section">
+                                    <div class="user-img-div">
+                                        <img src="${user.titlePhoto}" alt="" class="user-img">
                                     </div>
-                                    <div class="user-name-div">
-                                        <h4 class="user-name">@${user.handle}</h4>
+                                    <div class="name-section">
+                                        <div class="name-div">
+                                            <h3 class="name">${fullName}</h3>
+                                        </div>
+                                        <div class="user-name-div">
+                                            <h4 class="user-name">@${user.handle}</h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="ratings-section">
-                            <div class="curr-rating rating-div">
-                                <h2 class="rating-score">${user.rank}</h2>
-                                <p>Current Rank</p>
+                            <div class="ratings-section">
+                                <div class="curr-rating rating-div">
+                                    <h2 class="rating-score">${user.rank}</h2>
+                                    <p>Current Rank</p>
+                                </div>
+                                <div class="old-rating rating-div">
+                                    <h2 class="rating-score">${user.rating}</h2>
+                                    <p>Current Rating</p>
+                                </div>
+                                <div class="max-rating rating-div">
+                                    <h2 class="rating-score">${user.maxRating}</h2>
+                                    <p>Max Rating</p>
+                                </div>
                             </div>
-                            <div class="old-rating rating-div">
-                                <h2 class="rating-score">${user.rating}</h2>
-                                <p>Current Rating</p>
-                            </div>
-                            <div class="max-rating rating-div">
-                                <h2 class="rating-score">${user.maxRating}</h2>
-                                <p>Max Rating</p>
-                            </div>
-                        </div>
-                    </div>`;
-            });
+                        </div>`;
+                });
+            }
         } catch (error) {
             console.error('Error displaying users:', error);
+            alert('An error occurred while displaying users. Please try again.');
         }
     }
 
