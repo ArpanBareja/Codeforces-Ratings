@@ -1,45 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const key = 1;
-
-    // Event listener for adding a user
-    const addButton = document.getElementById('add');
-    if (addButton) {
-        addButton.addEventListener('click', async () => {
-            const inputField = document.getElementById('input-field');
-            if (!inputField || !inputField.value.trim()) {
-                console.error('Input field is missing or empty.');
-                return;
-            }
-
-            const user = inputField.value.trim();
-            await addUser(user);
-        });
-    } else {
-        console.error('Element with id "add" not found.');
-    }
-
-    // Event listener for clearing all users
-    const clearButton = document.getElementById('clrAll');
-    if (clearButton) {
-        clearButton.addEventListener('click', () => {
-            localStorage.clear();
-            returnUsers();
-        });
-    } else {
-        console.error('Element with id "clrAll" not found.');
-    }
-
-    // Load users from localStorage on page load
-    reload();
+    const key = 'users'; // Use a string for localStorage key
 
     // Function to add a user to localStorage and update UI
     async function addUser(user) {
         try {
             const response = await fetch(`https://codeforces.com/api/user.rating?handle=${user}`);
             const data = await response.json();
-            
+
             if (data.status === "FAILED") {
-                console.error('Failed to fetch user data.');
+                console.error('Failed to fetch user rating.');
                 return;
             }
 
@@ -75,6 +44,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const cardsDiv = document.getElementById('cards-div');
+            if (!cardsDiv) {
+                console.error('Element with id "cards-div" not found.');
+                return;
+            }
+
             cardsDiv.innerHTML = '';
 
             data.result.forEach(user => {
@@ -96,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                     </div>
                                 </div>
                             </div>
-                            
                         </div>
                         <div class="ratings-section">
                             <div class="curr-rating rating-div">
@@ -122,4 +95,35 @@ document.addEventListener('DOMContentLoaded', function() {
     function reload() {
         returnUsers();
     }
+
+    // Event listener for adding a user
+    const addButton = document.getElementById('add');
+    if (addButton) {
+        addButton.addEventListener('click', async () => {
+            const inputField = document.getElementById('input-field');
+            if (!inputField || !inputField.value.trim()) {
+                console.error('Input field is missing or empty.');
+                return;
+            }
+
+            const user = inputField.value.trim();
+            await addUser(user);
+        });
+    } else {
+        console.error('Element with id "add" not found.');
+    }
+
+    // Event listener for clearing all users
+    const clearButton = document.getElementById('clrAll');
+    if (clearButton) {
+        clearButton.addEventListener('click', () => {
+            localStorage.clear();
+            returnUsers();
+        });
+    } else {
+        console.error('Element with id "clrAll" not found.');
+    }
+
+    // Load users from localStorage on page load
+    reload();
 });
