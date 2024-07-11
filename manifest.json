@@ -8,14 +8,13 @@
         "default_icon": "CFR.png",
         "default_popup": "index.html"
     },
-    "permissions": ["activeTab"],
+    "permissions": [
+        "storage"
+    ],
     "icons": {
         "128": "CFR.png"
     },
-    "content_scripts": [
-        {
-            "matches": ["<all_urls>"],
-            "js": ["index.js"]
-        }
-    ]
+    "background": {
+        "service_worker": "background.js"
+    }
 }
