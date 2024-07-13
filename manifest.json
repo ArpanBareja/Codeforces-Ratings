@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Codeforces Ratings",
     "description": "A browser extension used to know your friends' ratings on Codeforces",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "action": {
         "default_title": "Codeforces-Ratings",
         "default_icon": "CFR.png",
