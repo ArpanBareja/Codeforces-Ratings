@@ -247,19 +247,6 @@ button:hover {
     font-weight: 700;
 }
 
-/* Loading Indicator */
-card.loading::after {
-    content: 'Loading...'; /* Text-based loading indicator */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-/* Alternatively, you can use a spinner */
 .card.loading::after {
     content: '';
     position: absolute;
